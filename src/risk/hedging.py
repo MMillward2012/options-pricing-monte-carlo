@@ -1,10 +1,43 @@
 # src/risk/hedging.py
 
 import numpy as np
+import pandas as pd
+import time
 
 # Import our custom modules
 from src.models.black_scholes import black_scholes_call_price, black_scholes_delta
 from src.models.monte_carlo import simulate_gbm_paths
+
+class DeltaHedgingEngine:
+    """
+    Production-grade delta hedging simulation engine.
+    """
+    
+    def __init__(self, transaction_cost=0.001):
+        self.transaction_cost = transaction_cost
+        
+    def simulate_hedging_pnl(self, S0, K, T, r, sigma, n_simulations, steps=252):
+        """
+        Main hedging simulation method.
+        """
+        return simulate_delta_hedging(S0, K, T, r, sigma, n_simulations, steps)
+        
+    def analyze_hedging_performance(self, S0, K, T, r, sigma, n_simulations=10000):
+        """
+        Comprehensive hedging performance analysis.
+        """
+        pnl_results = self.simulate_hedging_pnl(S0, K, T, r, sigma, n_simulations)
+        
+        stats = {
+            'mean_pnl': np.mean(pnl_results),
+            'std_pnl': np.std(pnl_results),
+            'var_95': np.percentile(pnl_results, 5),
+            'var_99': np.percentile(pnl_results, 1),
+            'max_loss': np.min(pnl_results),
+            'max_gain': np.max(pnl_results)
+        }
+        
+        return stats, pnl_results
 
 def simulate_delta_hedging(S0, K, T, r, sigma, n_simulations, steps=252):
     """
