@@ -29,24 +29,27 @@ class MarketImpactAnalyzer:
                 hist_data = ticker_obj.history(period='60d', interval='1d', timeout=10)
                 
                 option_data = []
-                expiry_dates = ticker_obj.options[:3] 
-                
-                for expiry in expiry_dates:
-                    try:
-                        chain = ticker_obj.option_chain(expiry)
-                        if chain.calls.empty and chain.puts.empty:
-                            print(f"    - No option data for {ticker} on expiry {expiry}.")
+                try:
+                    expiry_dates = ticker_obj.options[:3] 
+                    
+                    for expiry in expiry_dates:
+                        try:
+                            chain = ticker_obj.option_chain(expiry)
+                            if chain.calls.empty and chain.puts.empty:
+                                print(f"    - No option data for {ticker} on expiry {expiry}.")
+                                continue
+                            
+                            calls, puts = chain.calls, chain.puts
+                            calls['option_type'], calls['expiry'] = 'call', expiry
+                            puts['option_type'], puts['expiry'] = 'put', expiry
+                            
+                            option_data.append(calls)
+                            option_data.append(puts)
+                        except Exception as e:
+                            print(f"    - Could not fetch option chain for {ticker} expiry {expiry}: {e}")
                             continue
-                        
-                        calls, puts = chain.calls, chain.puts
-                        calls['option_type'], calls['expiry'] = 'call', expiry
-                        puts['option_type'], puts['expiry'] = 'put', expiry
-                        
-                        option_data.append(calls)
-                        option_data.append(puts)
-                    except Exception as e:
-                        print(f"    - Could not fetch option chain for {ticker} expiry {expiry}: {e}")
-                        continue
+                except Exception as e:
+                    print(f"    - No options available for {ticker}: {e}")
                 
                 if option_data:
                     options_df = pd.concat(option_data, ignore_index=True)
@@ -69,10 +72,15 @@ class MarketImpactAnalyzer:
         Calculate realistic position size limits based on market liquidity.
         """
         print("\nAnalyzing liquidity constraints...")
+        
+        # First fetch data if not already done
+        if not self.market_data:
+            self.fetch_comprehensive_market_data()
+            
         constraints = {}
         
         for ticker, data in self.market_data.items():
-            print(f"--> Analyzing: {ticker}") # DEBUG: Confirming which ticker we are on
+            print(f"--> Analyzing: {ticker}")
             stock_data = data['stock_data']
             options_data = data['options_data']
             
@@ -80,38 +88,51 @@ class MarketImpactAnalyzer:
                 print(f"    - FAIL: Stock data is empty for {ticker}. Skipping.")
                 continue
             
-            if options_data.empty:
-                print(f"    - FAIL: Options data is empty for {ticker}. Skipping.")
-                continue
-
-            print(f"    - Stock and option data found for {ticker}.") # DEBUG
-            
             # Stock liquidity analysis
             avg_daily_volume = stock_data['Volume'].mean()
+            current_price = stock_data['Close'].iloc[-1]
             avg_daily_dollar_volume = (stock_data['Volume'] * stock_data['Close']).mean()
             
-            # Options liquidity analysis
-            liquid_options = options_data[(options_data['volume'] > 10) & (options_data['bid'] > 0) & (options_data['ask'] > 0)].copy()
+            # Maximum position size (1% of daily volume rule)
+            max_stock_dollar_position = avg_daily_dollar_volume * 0.01
             
-            if liquid_options.empty:
-                print(f"    - FAIL: No LIQUID options found for {ticker} after filtering. Skipping.")
-                continue
-
-            print(f"    - Found {len(liquid_options)} liquid options for {ticker}.") # DEBUG
-
-            current_price = stock_data['Close'].iloc[-1]
-            # Added a small epsilon to avoid division by zero
-            avg_spread_pct = ((liquid_options['ask'] - liquid_options['bid']) / (liquid_options['lastPrice'] + 1e-6)).mean() * 100
+            # Options liquidity analysis
+            if not options_data.empty:
+                liquid_options = options_data[
+                    (options_data['volume'] > 10) & 
+                    (options_data['bid'] > 0) & 
+                    (options_data['ask'] > 0)
+                ].copy()
+                
+                if not liquid_options.empty:
+                    # Calculate average spread
+                    avg_spread_pct = ((liquid_options['ask'] - liquid_options['bid']) / 
+                                    (liquid_options['lastPrice'] + 1e-6)).mean() * 100
+                    liquid_strikes_count = len(liquid_options)
+                    total_option_volume = liquid_options['volume'].sum()
+                else:
+                    avg_spread_pct = 5.0  # Default high spread if no liquid options
+                    liquid_strikes_count = 0
+                    total_option_volume = 0
+            else:
+                avg_spread_pct = 5.0  # Default high spread if no options data
+                liquid_strikes_count = 0
+                total_option_volume = 0
             
             strategy_capacity = avg_daily_dollar_volume * 0.01
 
             constraints[ticker] = {
-                'avg_daily_dollar_volume': f"${avg_daily_dollar_volume:,.0f}",
-                'estimated_strategy_capacity': f"${strategy_capacity:,.0f}",
-                'liquid_options_contracts': liquid_options['volume'].sum(),
-                'avg_bid_ask_spread_pct': f"{avg_spread_pct:.2f}%"
+                'avg_daily_dollar_volume': avg_daily_dollar_volume,
+                'max_stock_dollar_position': max_stock_dollar_position,
+                'estimated_strategy_capacity': strategy_capacity,
+                'liquid_options_contracts': total_option_volume,
+                'liquid_strikes_count': liquid_strikes_count,
+                'avg_option_spread_pct': avg_spread_pct,  # Fixed key name
+                'avg_bid_ask_spread_pct': avg_spread_pct,  # Keep both for compatibility
+                'current_price': current_price,
+                'avg_daily_volume': avg_daily_volume
             }
-            print(f"    - SUCCESS: Metrics calculated for {ticker}.") # DEBUG
+            print(f"    - SUCCESS: Metrics calculated for {ticker}.")
         
         self.liquidity_metrics = constraints
         return constraints
@@ -132,13 +153,13 @@ class MarketImpactAnalyzer:
         
         for trade_size in trade_sizes:
             # Market impact model: sqrt(trade_size / daily_volume)
-            size_ratio = trade_size / max_position
+            size_ratio = trade_size / max_position if max_position > 0 else 0
             
             # Base impact (spreads)
             base_impact_bps = metrics['avg_option_spread_pct'] * 100  # Convert to bps
             
             # Volume impact (increases with square root of size)
-            volume_impact_bps = 50 * np.sqrt(size_ratio)  # 50bps at 100% of volume
+            volume_impact_bps = 50 * np.sqrt(size_ratio) if size_ratio > 0 else 0
             
             # Timing impact (larger trades take longer, create more impact)
             timing_impact_bps = 20 * size_ratio if size_ratio > 0.5 else 0
@@ -188,20 +209,21 @@ class MarketImpactAnalyzer:
                     # Calculate rolling correlation
                     correlation = spy_aligned.rolling(20).corr(aapl_aligned).dropna()
                     
-                    # Find correlation breakdown periods
-                    mean_corr = correlation.mean()
-                    corr_std = correlation.std()
-                    breakdown_threshold = mean_corr - 2 * corr_std
-                    
-                    breakdown_days = (correlation < breakdown_threshold).sum()
-                    breakdown_pct = breakdown_days / len(correlation) * 100
-                    
-                    opportunities['spy_aapl_correlation_breakdown'] = {
-                        'mean_correlation': mean_corr,
-                        'breakdown_days_pct': breakdown_pct,
-                        'avg_breakdown_alpha_bps': abs(correlation - mean_corr).mean() * 10000,
-                        'max_breakdown_alpha_bps': abs(correlation - mean_corr).max() * 10000
-                    }
+                    if len(correlation) > 0:
+                        # Find correlation breakdown periods
+                        mean_corr = correlation.mean()
+                        corr_std = correlation.std()
+                        breakdown_threshold = mean_corr - 2 * corr_std
+                        
+                        breakdown_days = (correlation < breakdown_threshold).sum()
+                        breakdown_pct = breakdown_days / len(correlation) * 100
+                        
+                        opportunities['spy_aapl_correlation_breakdown'] = {
+                            'mean_correlation': mean_corr,
+                            'breakdown_days_pct': breakdown_pct,
+                            'avg_breakdown_alpha_bps': abs(correlation - mean_corr).mean() * 10000,
+                            'max_breakdown_alpha_bps': abs(correlation - mean_corr).max() * 10000
+                        }
         
         return opportunities
     
@@ -282,8 +304,8 @@ class MarketImpactAnalyzer:
                 'infrastructure_costs': infrastructure_cost,
                 'net_revenue_potential': annual_revenue_potential - infrastructure_cost,
                 'is_economically_viable': annual_revenue_potential > infrastructure_cost * 2,  # 2x cost coverage
-                'capacity_utilization_pct': (impact_adjusted_capacity / base_capacity) * 100,
-                'break_even_alpha_bps': (infrastructure_cost / impact_adjusted_capacity) * 10000 / 252
+                'capacity_utilization_pct': (impact_adjusted_capacity / base_capacity) * 100 if base_capacity > 0 else 0,
+                'break_even_alpha_bps': (infrastructure_cost / impact_adjusted_capacity) * 10000 / 252 if impact_adjusted_capacity > 0 else float('inf')
             }
         
         return capacity_analysis
@@ -298,14 +320,24 @@ class MarketImpactAnalyzer:
         
         return volume_score + spread_score + depth_score
     
-    def generate_executive_summary(self) -> pd.DataFrame:
+    def generate_executive_summary(self) -> Dict[str, any]:  # Changed return type annotation
         """
         Generate the key metrics for your CV/interviews.
         This is what hiring managers want to see.
         """
         
         if not self.liquidity_metrics:
-            return {}
+            return {
+                'error': 'No liquidity metrics available. Run analyze_liquidity_constraints() first.',
+                'total_addressable_market': '$0',
+                'average_bid_ask_spread_pct': 'N/A',
+                'liquid_opportunities_count': 0,
+                'economically_viable_strategies': '0/0',
+                'annual_revenue_potential': '$0',
+                'average_capacity_utilization_pct': '0.0%',
+                'key_constraint': 'no_data',
+                'scalability_rating': 'None'
+            }
         
         # Aggregate metrics across all tickers
         total_deployable_capital = sum(
@@ -334,7 +366,7 @@ class MarketImpactAnalyzer:
             'liquid_opportunities_count': total_liquid_strikes,
             'economically_viable_strategies': f"{viable_strategies}/{len(capacity_data)}",
             'annual_revenue_potential': f"${total_revenue_potential:,.0f}",
-            'average_capacity_utilization_pct': f"{np.mean([a['capacity_utilization_pct'] for a in capacity_data.values()]):.1f}%",
+            'average_capacity_utilization_pct': f"{np.mean([a['capacity_utilization_pct'] for a in capacity_data.values()]) if capacity_data else 0:.1f}%",
             'key_constraint': 'liquidity' if avg_spread < 2.0 else 'transaction_costs',
             'scalability_rating': 'High' if total_revenue_potential > 2000000 else 'Medium' if total_revenue_potential > 500000 else 'Low'
         }
