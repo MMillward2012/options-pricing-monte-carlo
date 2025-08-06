@@ -254,9 +254,22 @@ python -m pytest tests/test_model_validation.py -v
 
 ## 📝 Documentation
 
-- **[Options Basics](docs/Options_basic.md)** - Introduction to options theory
-- **[Model Limitations](docs/model_limitations.md)** - Understanding model constraints
-- **[Stochastic Intuition](docs/stochastic_intuition.md)** - Monte Carlo methodology
+Comprehensive educational materials covering all aspects of quantitative finance and computational methods:
+
+### 📚 Core Financial Concepts
+- **[Options Fundamentals](docs/Options_basic.md)** - Complete introduction to options theory from mathematical perspective
+- **[Black-Scholes Model](docs/black_scholes_theory.md)** - Deep dive into the mathematical framework and analytical solutions
+- **[Model Limitations](docs/model_limitations.md)** - Understanding where theory breaks down in practice
+
+### 🎲 Computational Methods  
+- **[Stochastic Processes](docs/stochastic_intuition.md)** - Mathematical foundations of random processes in finance
+- **[Monte Carlo Methods](docs/monte_carlo_methods.md)** - From basic simulation to advanced variance reduction techniques
+- **[Performance Optimization](docs/performance_optimization.md)** - High-performance computing techniques for financial applications
+
+### ⚖️ Risk Management
+- **[Risk Management & Hedging](docs/risk_management_hedging.md)** - Practical risk control strategies and delta hedging implementation
+
+**Target audience**: Strong undergraduate mathematics background, no prior finance knowledge required. Each document builds from mathematical foundations to practical implementation with real code examples.
 
 ## 🤝 Contributing
 
