@@ -1,0 +1,186 @@
+COMPREHENSIVE OPTIONS PRICING ANALYSIS RESULTS
+============================================================
+Generated: 2025-08-05T16:54:20.503530
+Session ID: 20250805_165121
+
+PERFORMANCE METRICS:
+----------------------------------------
+avg_daily_dollar_volume       : 34,584,870,860.3310
+max_stock_dollar_position     : 345,848,708.6033
+estimated_strategy_capacity   : 345,848,708.6033
+liquid_options_contracts      : 535,313.0000
+liquid_strikes_count          : 341.0000
+avg_option_spread_pct         : 1162.28%
+avg_bid_ask_spread_pct        : 1162.28%
+current_price                 : 306.6446
+avg_daily_volume              : 107,065,338.3833
+
+MONTE CARLO RESULTS:
+----------------------------------------
+
+Option_Parameters:
+  S0                            : 100.0000
+  K                             : 105.0000
+  T                             : 1.0000
+  r                             : 0.0500
+  sigma                         : 0.2000
+engine_ready                  : 1.0000
+stock_price                   : 100.0000
+strike_price                  : 105.0000
+time_to_expiry                : 0.2500
+risk_free_rate                : 0.0500
+volatility                    : 0.2000
+true_volatility               : 0.2000
+model_volatility              : 0.1800
+
+MONTE CARLO SIMULATION:
+----------------------------------------
+
+All_Performance_Metrics:
+  avg_daily_dollar_volume       : 34,584,870,860.3310
+  max_stock_dollar_position     : 345,848,708.6033
+  estimated_strategy_capacity   : 345,848,708.6033
+  liquid_options_contracts      : 535,313.0000
+  liquid_strikes_count          : 341.0000
+  avg_option_spread_pct         : 1162.28%
+  avg_bid_ask_spread_pct        : 1162.28%
+  current_price                 : 306.6446
+  avg_daily_volume              : 107,065,338.3833
+
+Live_Benchmark:
+  peak_sims_per_second          : 59,299,670.0000
+  peak_performance_at_simulations: 500,000.0000
+  fastest_time_seconds          : 0.0084
+  benchmark_results             : [{'simulations': 10000, 'time_seconds': 1.060776041005738, 'sims_per_second': 9427, 'mc_price': 8.100938272667575}, {'simulations': 100000, 'time_seconds': 0.0019978329655714333, 'sims_per_second': 50054234, 'mc_price': 8.03399090265241}, {'simulations': 500000, 'time_seconds': 0.008431750000454485, 'sims_per_second': 59299670, 'mc_price': 8.013632660538178}]
+  benchmark_timestamp           : 20250805_165121
+
+HEDGING ANALYSIS:
+----------------------------------------
+
+Performance_Stats:
+  mean_pnl                      : $0.00
+  std_pnl                       : $0.22
+  var_95                        : -0.3500
+  var_99                        : -0.5870
+  max_loss                      : $-1.11
+  max_gain                      : 0.8071
+
+Pnl_Statistics:
+  mean                          : 0.0038
+  std                           : 0.2228
+  min                           : -1.1097
+  max                           : 0.8071
+  percentile_5                  : -35.00%
+  percentile_25                 : -11.66%
+  percentile_50                 : 0.53%
+  percentile_75                 : 12.27%
+  percentile_95                 : 36.48%
+  total_simulations             : 1,000.0000
+  profitable_scenarios          : $511.00
+  loss_scenarios                : $489.00
+
+REGIME ANALYSIS:
+----------------------------------------
+analysis_ticker               : SPY
+regimes_identified            : 3.0000
+volatility_range              : 39.9%
+most_common_regime            : High Vol
+most_common_regime_frequency  : 49.0%
+highest_risk_regime           : Medium Vol
+highest_risk_vol              : 50.8%
+regime_transitions_per_year   : 3,906.0000
+avg_regime_persistence_days   : 16.0333
+max_stress_loss               : $-13,000.00
+risk_diversification_available: 1.0000
+model_complexity_required     : High
+
+ARBITRAGE ANALYSIS:
+----------------------------------------
+opportunities_found           : 0.0000
+
+LIQUIDITY ANALYSIS:
+----------------------------------------
+
+Spy:
+  avg_daily_dollar_volume       : 43,435,126,450.8694
+  max_stock_dollar_position     : 434,351,264.5087
+  estimated_strategy_capacity   : 434,351,264.5087
+  liquid_options_contracts      : 3,081,917.0000
+  liquid_strikes_count          : 251.0000
+  avg_option_spread_pct         : 1663.59%
+  avg_bid_ask_spread_pct        : 1663.59%
+  current_price                 : 627.3300
+  avg_daily_volume              : 71,493,901.2000
+
+Qqq:
+  avg_daily_dollar_volume       : 24,749,152,329.2715
+  max_stock_dollar_position     : 247,491,523.2927
+  estimated_strategy_capacity   : 247,491,523.2927
+  liquid_options_contracts      : 1,620,140.0000
+  liquid_strikes_count          : 259.0000
+  avg_option_spread_pct         : 1589.91%
+  avg_bid_ask_spread_pct        : 1589.91%
+  current_price                 : 560.0500
+  avg_daily_volume              : 45,988,079.7000
+
+Aapl:
+  avg_daily_dollar_volume       : 10,871,839,653.2596
+  max_stock_dollar_position     : 108,718,396.5326
+  estimated_strategy_capacity   : 108,718,396.5326
+  liquid_options_contracts      : 233,237.0000
+  liquid_strikes_count          : 127.0000
+  avg_option_spread_pct         : 1086.25%
+  avg_bid_ask_spread_pct        : 1086.25%
+  current_price                 : 203.7900
+  avg_daily_volume              : 52,932,272.9667
+
+Tsla:
+  avg_daily_dollar_volume       : 34,584,870,860.3310
+  max_stock_dollar_position     : 345,848,708.6033
+  estimated_strategy_capacity   : 345,848,708.6033
+  liquid_options_contracts      : 535,313.0000
+  liquid_strikes_count          : 341.0000
+  avg_option_spread_pct         : 1162.28%
+  avg_bid_ask_spread_pct        : 1162.28%
+  current_price                 : 306.6446
+  avg_daily_volume              : 107,065,338.3833
+
+MODEL BREAKDOWN:
+----------------------------------------
+error                         : Analysis not available without market data
+
+TRANSACTION COSTS:
+----------------------------------------
+spread_cost                   : $100.00
+market_impact                 : 0.0500
+commission                    : 5.0000
+exchange_fees                 : 0.2500
+financing_daily               : 0.3968
+total_entry_cost              : $105.30
+cost_bps                      : $210.60
+notional                      : 5,000.0000
+analyzer_available            : 1.0000
+
+BACKTESTING:
+----------------------------------------
+backtester_available          : 1.0000
+backtester_type               : HistoricalBacktester
+
+MARKET DATA:
+----------------------------------------
+analyzed_tickers              : ['SPY', 'QQQ', 'AAPL', 'MSFT']
+ticker_count                  : 4.0000
+live_risk_free_rate           : 0.0500
+
+RAW DATA:
+----------------------------------------
+summary_dataframe             : [{'Value': '$1,136,409,893'}, {'Value': '13.76%'}, {'Value': 978}, {'Value': '4/4'}, {'Value': '$171,601,164'}, {'Value': '60.4%'}, {'Value': 'transaction_costs'}, {'Value': 'High'}]
+
+Import_Performance:
+  import_time                   : 0.0013
+  core_modules_loaded           : 1.0000
+  risk_modules_loaded           : 1.0000
+  arbitrage_loaded              : 1.0000
+  cost_calc_loaded              : $1.00
+  transaction_cost_available    : $1.00
+

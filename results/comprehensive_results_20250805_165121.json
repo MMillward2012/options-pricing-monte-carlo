@@ -1,0 +1,226 @@
+{
+  "metadata": {
+    "timestamp": "20250805_165121",
+    "analysis_date": "2025-08-05T16:54:20.503530",
+    "notebook_version": "1.0",
+    "analysis_type": "options_pricing_monte_carlo"
+  },
+  "performance_metrics": {
+    "avg_daily_dollar_volume": 34584870860.330956,
+    "max_stock_dollar_position": 345848708.6033096,
+    "estimated_strategy_capacity": 345848708.6033096,
+    "liquid_options_contracts": 535313.0,
+    "liquid_strikes_count": 341,
+    "avg_option_spread_pct": 11.622801149289035,
+    "avg_bid_ask_spread_pct": 11.622801149289035,
+    "current_price": 306.64459228515625,
+    "avg_daily_volume": 107065338.38333334
+  },
+  "monte_carlo_results": {
+    "option_parameters": {
+      "S0": 100,
+      "K": 105,
+      "T": 1.0,
+      "r": 0.05,
+      "sigma": 0.2
+    },
+    "engine_ready": true,
+    "stock_price": 100,
+    "strike_price": 105,
+    "time_to_expiry": 0.25,
+    "risk_free_rate": 0.05,
+    "volatility": 0.2,
+    "true_volatility": 0.2,
+    "model_volatility": 0.18
+  },
+  "monte_carlo_simulation": {
+    "all_performance_metrics": {
+      "avg_daily_dollar_volume": 34584870860.330956,
+      "max_stock_dollar_position": 345848708.6033096,
+      "estimated_strategy_capacity": 345848708.6033096,
+      "liquid_options_contracts": 535313.0,
+      "liquid_strikes_count": 341,
+      "avg_option_spread_pct": 11.622801149289035,
+      "avg_bid_ask_spread_pct": 11.622801149289035,
+      "current_price": 306.64459228515625,
+      "avg_daily_volume": 107065338.38333334
+    },
+    "live_benchmark": {
+      "peak_sims_per_second": 59299670,
+      "peak_performance_at_simulations": 500000,
+      "fastest_time_seconds": 0.008431750000454485,
+      "benchmark_results": [
+        {
+          "simulations": 10000,
+          "time_seconds": 1.060776041005738,
+          "sims_per_second": 9427,
+          "mc_price": 8.100938272667575
+        },
+        {
+          "simulations": 100000,
+          "time_seconds": 0.0019978329655714333,
+          "sims_per_second": 50054234,
+          "mc_price": 8.03399090265241
+        },
+        {
+          "simulations": 500000,
+          "time_seconds": 0.008431750000454485,
+          "sims_per_second": 59299670,
+          "mc_price": 8.013632660538178
+        }
+      ],
+      "benchmark_timestamp": "20250805_165121"
+    }
+  },
+  "hedging_analysis": {
+    "performance_stats": {
+      "mean_pnl": 0.0038310708195884494,
+      "std_pnl": 0.22284474432971244,
+      "var_95": -0.3500188050530298,
+      "var_99": -0.5870296411713067,
+      "max_loss": -1.1097184200264962,
+      "max_gain": 0.8070551380864472
+    },
+    "pnl_statistics": {
+      "mean": 0.0038310708195884494,
+      "std": 0.22284474432971244,
+      "min": -1.1097184200264962,
+      "max": 0.8070551380864472,
+      "percentile_5": -0.3500188050530298,
+      "percentile_25": -0.11658679281274967,
+      "percentile_50": 0.0053406595219055875,
+      "percentile_75": 0.12270105581116336,
+      "percentile_95": 0.36476373615354607,
+      "total_simulations": 1000,
+      "profitable_scenarios": 511,
+      "loss_scenarios": 489
+    }
+  },
+  "regime_analysis": {
+    "analysis_ticker": "SPY",
+    "regimes_identified": 3,
+    "volatility_range": "39.9%",
+    "most_common_regime": "High Vol",
+    "most_common_regime_frequency": "49.0%",
+    "highest_risk_regime": "Medium Vol",
+    "highest_risk_vol": "50.8%",
+    "regime_transitions_per_year": 3906.0,
+    "avg_regime_persistence_days": 16.033333333333335,
+    "max_stress_loss": -13000.0,
+    "risk_diversification_available": true,
+    "model_complexity_required": "High"
+  },
+  "arbitrage_analysis": {
+    "opportunities_found": 0
+  },
+  "liquidity_analysis": {
+    "SPY": {
+      "avg_daily_dollar_volume": 43435126450.869354,
+      "max_stock_dollar_position": 434351264.5086936,
+      "estimated_strategy_capacity": 434351264.5086936,
+      "liquid_options_contracts": 3081917.0,
+      "liquid_strikes_count": 251,
+      "avg_option_spread_pct": 16.635909683455075,
+      "avg_bid_ask_spread_pct": 16.635909683455075,
+      "current_price": 627.3300170898438,
+      "avg_daily_volume": 71493901.2
+    },
+    "QQQ": {
+      "avg_daily_dollar_volume": 24749152329.271484,
+      "max_stock_dollar_position": 247491523.29271483,
+      "estimated_strategy_capacity": 247491523.29271483,
+      "liquid_options_contracts": 1620140.0,
+      "liquid_strikes_count": 259,
+      "avg_option_spread_pct": 15.899136429857613,
+      "avg_bid_ask_spread_pct": 15.899136429857613,
+      "current_price": 560.0499877929688,
+      "avg_daily_volume": 45988079.7
+    },
+    "AAPL": {
+      "avg_daily_dollar_volume": 10871839653.259562,
+      "max_stock_dollar_position": 108718396.53259562,
+      "estimated_strategy_capacity": 108718396.53259562,
+      "liquid_options_contracts": 233237.0,
+      "liquid_strikes_count": 127,
+      "avg_option_spread_pct": 10.862530793793784,
+      "avg_bid_ask_spread_pct": 10.862530793793784,
+      "current_price": 203.7899932861328,
+      "avg_daily_volume": 52932272.96666667
+    },
+    "TSLA": {
+      "avg_daily_dollar_volume": 34584870860.330956,
+      "max_stock_dollar_position": 345848708.6033096,
+      "estimated_strategy_capacity": 345848708.6033096,
+      "liquid_options_contracts": 535313.0,
+      "liquid_strikes_count": 341,
+      "avg_option_spread_pct": 11.622801149289035,
+      "avg_bid_ask_spread_pct": 11.622801149289035,
+      "current_price": 306.64459228515625,
+      "avg_daily_volume": 107065338.38333334
+    }
+  },
+  "model_breakdown": {
+    "error": "Analysis not available without market data"
+  },
+  "transaction_costs": {
+    "spread_cost": 100.0,
+    "market_impact": 0.05,
+    "commission": 5.0,
+    "exchange_fees": 0.25,
+    "financing_daily": 0.3968253968253968,
+    "total_entry_cost": 105.3,
+    "cost_bps": 210.6,
+    "notional": 5000.0,
+    "analyzer_available": true
+  },
+  "backtesting": {
+    "backtester_available": true,
+    "backtester_type": "HistoricalBacktester"
+  },
+  "market_data": {
+    "analyzed_tickers": [
+      "SPY",
+      "QQQ",
+      "AAPL",
+      "MSFT"
+    ],
+    "ticker_count": 4,
+    "live_risk_free_rate": 0.05
+  },
+  "raw_data": {
+    "summary_dataframe": [
+      {
+        "Value": "$1,136,409,893"
+      },
+      {
+        "Value": "13.76%"
+      },
+      {
+        "Value": 978
+      },
+      {
+        "Value": "4/4"
+      },
+      {
+        "Value": "$171,601,164"
+      },
+      {
+        "Value": "60.4%"
+      },
+      {
+        "Value": "transaction_costs"
+      },
+      {
+        "Value": "High"
+      }
+    ],
+    "import_performance": {
+      "import_time": 0.0012627909891307354,
+      "core_modules_loaded": true,
+      "risk_modules_loaded": true,
+      "arbitrage_loaded": true,
+      "cost_calc_loaded": true,
+      "transaction_cost_available": true
+    }
+  }
+}
